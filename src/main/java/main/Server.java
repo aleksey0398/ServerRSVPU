@@ -32,6 +32,7 @@ public class Server implements Runnable {
             server.start();
         } catch (Exception e) {
             e.printStackTrace();
+            Start.addTextError("Server\nrun()\n"+e.getMessage());
         }
     }
 
@@ -40,11 +41,12 @@ public class Server implements Runnable {
         public void handle(HttpExchange exchange) {
 
             new Thread(() -> {
+                Server.userConnection++;
+                Start.setTextCountConnection(userConnection);
+                String textForGUI = "User connection!\n" + exchange.getRequestURI() + "\n";
 
                 print("===============User connection!==============");
                 StringBuilder builder = new StringBuilder();
-                Server.userConnection++;
-//                print("RequestURL");
 
                 switch (String.valueOf(exchange.getRequestURI())) {
 
@@ -65,7 +67,7 @@ public class Server implements Runnable {
                         break;
 
                     default:
-                        if(String.valueOf(exchange.getRequestURI()).equals("")|| String.valueOf(exchange.getRequestURI()).equals("/favicon.ico")){
+                        if (String.valueOf(exchange.getRequestURI()).equals("") || String.valueOf(exchange.getRequestURI()).equals("/favicon.ico")) {
                             break;
                         }
                 /*
@@ -97,13 +99,12 @@ public class Server implements Runnable {
                                 jsonForSend = GetResultThread.result_class.get(type_value);
                                 break;
                         }
-
+                        textForGUI += type_value + "\n";
                         print(type_value + ": " + jsonForSend);
                         if (jsonForSend == null) {
                             jsonForSend = new GetTimeTable().getTimeTable("?" + type + "=" + type_value + "&" + "v_date=" + date, typeTimeTable);
                         }
                         builder.append(jsonForSend);
-//                   System.out.println(req);
                         break;
 
 
@@ -121,25 +122,32 @@ public class Server implements Runnable {
                 try {
                     bytes = builder.toString().getBytes("UTF-8");
                 } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+                    e.printStackTrace();
+                    Start.addTextError("EchoHandler\n"+e.getMessage());
                 }
                 try {
                     exchange.sendResponseHeaders(200, bytes.length);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Start.addTextError("EchoHandler\n"+e.getMessage());
                 }
 
                 OutputStream os = exchange.getResponseBody();
+
                 try {
                     os.write(bytes);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Start.addTextError("EchoHandler\n"+e.getMessage());
                 }
                 try {
                     os.close();
                 } catch (IOException e) {
                     e.printStackTrace();
+//                    Start.addTextError("EchoHandler\n"+e.getMessage());
                 }
+
+                Start.addTextServer(textForGUI);
                 print("================================");
 
             }).start();

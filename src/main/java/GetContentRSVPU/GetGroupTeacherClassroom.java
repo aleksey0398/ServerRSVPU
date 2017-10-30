@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetGroupTeacherClassroom {
-    Document doc;
+    private Document doc;
     public final static int CLASSROOM = 0, GROUP = 1, TEACHER = 2;
     private String type = null;
 
@@ -81,9 +81,9 @@ public class GetGroupTeacherClassroom {
         return containerList;
     }
 
-    private void print(Object object) {
-        System.out.println(String.valueOf(object));
-    }
+//    private void print(Object object) {
+//        System.out.println(String.valueOf(object));
+//    }
 
 
 }

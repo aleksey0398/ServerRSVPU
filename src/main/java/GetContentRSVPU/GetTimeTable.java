@@ -2,6 +2,7 @@ package GetContentRSVPU;
 
 import com.google.gson.Gson;
 import main.Container;
+import main.Start;
 import main.var;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -64,29 +65,32 @@ public class GetTimeTable implements Runnable {
                     } else {
                         GetResultThread.result_group_z.put(this.valueForMap, jsonTimeTable);
                     }
+                    Start.addTextGroup(this.name + ": complete");
                     break;
                 case "prep":
 //                    print("case v_prep");
                     GetResultThread.result_teacher.put(this.valueForMap, jsonTimeTable);
-
+                    Start.addTextPrep(this.name+": complete");
                     break;
                 case "aud":
 //                    print("case v_aud");
                     GetResultThread.result_class.put(this.valueForMap, jsonTimeTable);
-
+                    Start.addTextClass(this.name+": complete");
                     break;
             }
             print(this.name + ": complete");
 
+
             Thread.currentThread().interrupt();
 
-        } catch (
-                IOException e)
-
-        {
+        } catch (IOException e) {
             e.printStackTrace();
+            run();
             System.err.println(this.name + ": error");
+            Start.addTextError(this.name + ": " + e.getMessage()+"\n"+e.toString());
             Thread.currentThread().interrupt();
+        } catch (Exception e) {
+            Start.addTextError("GetTimeTable\nrun()\n"+e.getMessage());
         }
 
     }
@@ -99,12 +103,15 @@ public class GetTimeTable implements Runnable {
             jsonForResult = new Gson().toJson(parseHTML(doc));
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Start.addTextError("GetTimeTable\n"+"getTimeTable()\n"+e.getMessage());
         }
 
         return jsonForResult;
     }
 
-    List<TimeTableOneDay> parseHTML(Document doc) {
+    private List<TimeTableOneDay> parseHTML(Document doc) throws Exception {
 
         List<TimeTableOneDay> timeTable = new ArrayList<>();
 
@@ -140,8 +147,8 @@ public class GetTimeTable implements Runnable {
         i = 0;
         for (Element date : doc.select("td[class='right']")) {
 //            System.out.println(date.text());
-            timeTable.get(7+i).colorOfTheWeek = date.select("p").attr("style").substring(6);
-            timeTable.get(7+i).date = date.text();
+            timeTable.get(7 + i).colorOfTheWeek = date.select("p").attr("style").substring(6);
+            timeTable.get(7 + i).date = date.text();
             i++;
         }
 
@@ -211,16 +218,16 @@ public class GetTimeTable implements Runnable {
 //        System.out.println("\t\t\t\t"+text.charAt(text.length()-1));
         if (text.charAt(text.length() - 1) == ')') {
 
-            String number = text.substring(text.length() - 6, text.length() - 1);
-//            System.out.println("\t\t\t\t" + number);
-            return number;
-        } else {
-//            System.out.println("\t\t\t\t" + null);
+            //            System.out.println("\t\t\t\t" + number);
+            return text.substring(text.length() - 6, text.length() - 1);
         }
+//        else {
+//            System.out.println("\t\t\t\t" + null);
+//        }
         return null;
     }
 
-     String getLessons(String lesson) {
+    private String getLessons(String lesson) {
         String lessonClear = lesson;
 //        System.out.println(lessonClear);
         int index = lesson.indexOf('(');
@@ -232,14 +239,13 @@ public class GetTimeTable implements Runnable {
         return lessonClear;
     }
 
-     String getLessonsType(String lesson) {
+    private String getLessonsType(String lesson) {
         int start = lesson.indexOf('(');
         int end = lesson.indexOf(')');
 
         if (start != -1) {
-            String string = lesson.substring(start + 1, end);
-//            System.out.println("\t\t\t\t" + string);
-            return string;
+            //            System.out.println("\t\t\t\t" + string);
+            return lesson.substring(start + 1, end);
         } else {
 //            System.out.println("\t\t\t\t" + null);
             return null;
@@ -262,7 +268,7 @@ public class GetTimeTable implements Runnable {
         return timeTableOneDays;
     }
 
-    void print(Object object) {
+    private void print(Object object) {
         System.out.println(String.valueOf(object));
     }
 }
