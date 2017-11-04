@@ -32,18 +32,22 @@ public class Server implements Runnable {
             server.start();
         } catch (Exception e) {
             e.printStackTrace();
-            Start.addTextError("Server\nrun()\n"+e.getMessage());
+            Start.addTextError("Server\nrun()\n" + e.getMessage());
         }
     }
 
     class EchoHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) {
-
+            if (exchange.getRequestURI().toString().equals("/favicon.ico")) {
+                return;
+            }
             new Thread(() -> {
-                Server.userConnection++;
+                if (!exchange.getRequestURI().toString().equals("/checkURL"))
+                    Server.userConnection++;
                 Start.setTextCountConnection(userConnection);
                 String textForGUI = "User connection!\n" + exchange.getRequestURI() + "\n";
+
 
                 print("===============User connection!==============");
                 StringBuilder builder = new StringBuilder();
@@ -64,6 +68,9 @@ public class Server implements Runnable {
 
                     case "/getCountConnection":
                         builder.append("Count: " + Server.userConnection + "\n");
+                        break;
+
+                    case "/checkURL":
                         break;
 
                     default:
@@ -123,13 +130,11 @@ public class Server implements Runnable {
                     bytes = builder.toString().getBytes("UTF-8");
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
-                    Start.addTextError("EchoHandler\n"+e.getMessage());
                 }
                 try {
                     exchange.sendResponseHeaders(200, bytes.length);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Start.addTextError("EchoHandler\n"+e.getMessage());
                 }
 
                 OutputStream os = exchange.getResponseBody();
@@ -138,16 +143,15 @@ public class Server implements Runnable {
                     os.write(bytes);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Start.addTextError("EchoHandler\n"+e.getMessage());
                 }
                 try {
                     os.close();
                 } catch (IOException e) {
                     e.printStackTrace();
-//                    Start.addTextError("EchoHandler\n"+e.getMessage());
                 }
 
-                Start.addTextServer(textForGUI);
+                if (!exchange.getRequestURI().toString().equals("/checkURL"))
+                    Start.addTextServer(textForGUI);
                 print("================================");
 
             }).start();

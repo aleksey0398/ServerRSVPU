@@ -25,8 +25,6 @@ public class Start extends JFrame {
 //    private static JList listClass = new JList();
 
     private static JTextArea textLogGroup = new JTextArea();
-    private static JTextArea textLogPrep = new JTextArea();
-    private static JTextArea textLogClass = new JTextArea();
 
     private static JTextArea textLogServer = new JTextArea();
     private static JTextArea textLogError = new JTextArea();
@@ -39,15 +37,11 @@ public class Start extends JFrame {
 
     static {
         textLogGroup.setEditable(false);
-        textLogClass.setEditable(false);
         textLogServer.setEditable(false);
         textLogError.setEditable(false);
-        textLogPrep.setEditable(false);
 
-        textLogGroup.setFont(textLogGroup.getFont().deriveFont(10f));
+        textLogGroup.setFont(textLogGroup.getFont().deriveFont(15f));
         textLogServer.setFont(textLogGroup.getFont());
-        textLogPrep.setFont(textLogGroup.getFont());
-        textLogClass.setFont(textLogGroup.getFont());
         textLogError.setFont(textLogGroup.getFont());
     }
 
@@ -64,23 +58,19 @@ public class Start extends JFrame {
     private static void createGIU() {
         frame = new JFrame("Server");
         frame.setSize(1200, 400);
-        JPanel mainPanel = new JPanel(new GridLayout(0,5));
+        JPanel mainPanel = new JPanel(new GridLayout(0,3));
 //        mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.Y_AXIS));
 //        mainPanel.add(listGroup);
 //        mainPanel.add(listClass);
 //        mainPanel.add(listPrep);
 
         JScrollPane scrollGroup = new JScrollPane(textLogGroup, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        JScrollPane scrollPrep = new JScrollPane(textLogPrep, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        JScrollPane scrollClass = new JScrollPane(textLogClass, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         JScrollPane scrollServer = new JScrollPane(textLogServer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         JScrollPane scrollError = new JScrollPane(textLogError, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 
         mainPanel.add(scrollError);
         mainPanel.add(scrollServer);
-        mainPanel.add(scrollClass);
-        mainPanel.add(scrollPrep);
         mainPanel.add(scrollGroup);
 
 //        mainPanel.add(textLastConnection);
@@ -97,19 +87,9 @@ public class Start extends JFrame {
         textLogGroup.append(args+"\n\n");
         textLogGroup.setCaretPosition(textLogGroup.getDocument().getLength());
     }
-    public static void addTextPrep(String args){
-        textLogPrep.append(args+"\n\n");
-        textLogPrep.setCaretPosition(textLogPrep.getDocument().getLength());
-
-    }
-    public static void addTextClass(String args){
-        textLogClass.append(args+"\n\n");
-        textLogClass.setCaretPosition(textLogClass.getDocument().getLength());
-
-    }
 
     static void addTextServer(String args){
-        textLogServer.append(args+"\n\n");
+        textLogServer.append("====="+getTime()+"====="+"\n"+args+"\n\n");
         textLogServer.setCaretPosition(textLogServer.getDocument().getLength());
 
     }
@@ -148,8 +128,6 @@ public class Start extends JFrame {
             while (true) {
                 setTextLastConnection();
 
-                textLogPrep.setText("==="+getTime()+"===\n");
-                textLogClass.setText("==="+getTime()+"===\n");
                 textLogGroup.setText("==="+getTime()+"===\n");
                 textLogError.append("==="+getTime()+"===\n");
                 textLogServer.setText("==="+getTime()+"====\n");

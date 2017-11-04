@@ -70,16 +70,15 @@ public class GetTimeTable implements Runnable {
                 case "prep":
 //                    print("case v_prep");
                     GetResultThread.result_teacher.put(this.valueForMap, jsonTimeTable);
-                    Start.addTextPrep(this.name+": complete");
+                    Start.addTextGroup(this.name+": complete");
                     break;
                 case "aud":
 //                    print("case v_aud");
                     GetResultThread.result_class.put(this.valueForMap, jsonTimeTable);
-                    Start.addTextClass(this.name+": complete");
+                    Start.addTextGroup(this.name+": complete");
                     break;
             }
             print(this.name + ": complete");
-
 
             Thread.currentThread().interrupt();
 
@@ -87,10 +86,12 @@ public class GetTimeTable implements Runnable {
             e.printStackTrace();
             run();
             System.err.println(this.name + ": error");
-            Start.addTextError(this.name + ": " + e.getMessage()+"\n"+e.toString());
+            Start.addTextGroup(this.name+": ERROR");
+            Start.addTextError(this.name + ": " + e.getMessage());
             Thread.currentThread().interrupt();
         } catch (Exception e) {
             Start.addTextError("GetTimeTable\nrun()\n"+e.getMessage());
+            Thread.currentThread().interrupt();
         }
 
     }
