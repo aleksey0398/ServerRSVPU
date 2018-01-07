@@ -14,7 +14,7 @@ import java.util.List;
  * Created october 11.10.2017
  * version 1.0
  */
-public class GetTimeTable {
+public class GetTimeTableBeta {
 
     private static Document doc;
     static List<TimeTableOneDay> timeTable = new ArrayList<>();
@@ -71,9 +71,6 @@ public class GetTimeTable {
                 timeTable.get(7+i).date = date.text();
                 i++;
             }
-
-
-
 
 
             System.out.println("\n" + timeTable.size());

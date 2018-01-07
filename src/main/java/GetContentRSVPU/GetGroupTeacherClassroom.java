@@ -21,7 +21,7 @@ public class GetGroupTeacherClassroom {
         try {
 //            long startConnection = System.currentTimeMillis();
             this.type = type;
-            doc = Jsoup.connect(type.equals("ochnoe") ? var.URLTimeTableOchnoe : var.URLTimeTableZaochnoe).get();
+            doc = Jsoup.connect(type.equals("ochnoe") ? var.URLTimeTableOchnoe : var.URLTimeTableZaochnoe).timeout(1000*60*10).get();
 //            print("connectionTime = "+ (System.currentTimeMillis() - startConnection));
         } catch (IOException e) {
             e.printStackTrace();

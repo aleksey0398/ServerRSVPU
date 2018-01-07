@@ -4,6 +4,7 @@ import GetContentRSVPU.GetResultThread;
 import GetContentRSVPU.GetTimeTable;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.*;
+import statistic.StatisticMain;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,7 +24,7 @@ public class Server implements Runnable {
         print("main.Server is running...");
         try {
             HttpServer server = HttpServer.create();
-            server.bind(new InetSocketAddress(8765), 10000000);
+            server.bind(new InetSocketAddress(var.releasePort), 10000000);
 
             HttpContext context = server.createContext("/", new EchoHandler());
             context.setAuthenticator(new Auth());
@@ -42,10 +43,12 @@ public class Server implements Runnable {
             if (exchange.getRequestURI().toString().equals("/favicon.ico")) {
                 return;
             }
+
             new Thread(() -> {
                 if (!exchange.getRequestURI().toString().equals("/checkURL"))
-                    Server.userConnection++;
-                Start.setTextCountConnection(userConnection);
+                    userConnection++;
+                StatisticMain.setCountConnection(userConnection);
+//                Start.setTextCountConnection(userConnection);
                 String textForGUI = "User connection!\n" + exchange.getRequestURI() + "\n";
 
 

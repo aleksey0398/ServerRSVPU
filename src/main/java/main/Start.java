@@ -2,6 +2,8 @@ package main;
 
 import GetContentRSVPU.GetGroupTeacherClassroom;
 import GetContentRSVPU.GetTimeTable;
+import beta.SaveTimeTable;
+import statistic.StatisticMain;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,32 +19,40 @@ public class Start extends JFrame {
     public static List<Container> list_group = new ArrayList<>();
     public static List<Container> list_teacher = new ArrayList<>();
     public static List<Container> list_classroom = new ArrayList<>();
-
     public static List<Container> list_group_z = new ArrayList<>();
 
-//    private static JList listGroup = new JList();
-//    private static JList listPrep = new JList();
-//    private static JList listClass = new JList();
+    private static JTextArea textLogAll = new JTextArea();
 
     private static JTextArea textLogGroup = new JTextArea();
+    private static JTextArea textLogTeacher = new JTextArea();
+    private static JTextArea textLogClass = new JTextArea();
 
     private static JTextArea textLogServer = new JTextArea();
     private static JTextArea textLogError = new JTextArea();
-//    private static JLabel textLastConnection= new JLabel();
-//    private static JLabel textCountConnection= new JLabel();
+
 
     private static JFrame frame;
 
     private static String lastConnectionTime = "";
 
+    public static SaveTimeTable saveTimeTable;
+
     static {
-        textLogGroup.setEditable(false);
+        textLogAll.setEditable(false);
         textLogServer.setEditable(false);
         textLogError.setEditable(false);
 
-        textLogGroup.setFont(textLogGroup.getFont().deriveFont(15f));
-        textLogServer.setFont(textLogGroup.getFont());
-        textLogError.setFont(textLogGroup.getFont());
+        textLogGroup.setEditable(false);
+        textLogTeacher.setEditable(false);
+        textLogClass.setEditable(false);
+
+        textLogAll.setFont(textLogAll.getFont().deriveFont(15f));
+        textLogServer.setFont(textLogAll.getFont());
+        textLogError.setFont(textLogAll.getFont());
+
+        textLogGroup.setFont(textLogAll.getFont());
+        textLogClass.setFont(textLogAll.getFont());
+        textLogTeacher.setFont(textLogAll.getFont());
     }
 
     Start() {
@@ -57,24 +67,25 @@ public class Start extends JFrame {
 
     private static void createGIU() {
         frame = new JFrame("Server");
-        frame.setSize(1200, 400);
-        JPanel mainPanel = new JPanel(new GridLayout(0,3));
-//        mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.Y_AXIS));
-//        mainPanel.add(listGroup);
-//        mainPanel.add(listClass);
-//        mainPanel.add(listPrep);
+        frame.setSize(1200, 800);
+        JPanel mainPanel = new JPanel(new GridLayout(2, 3));
 
-        JScrollPane scrollGroup = new JScrollPane(textLogGroup, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        JScrollPane scrollAll = new JScrollPane(textLogAll, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         JScrollPane scrollServer = new JScrollPane(textLogServer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         JScrollPane scrollError = new JScrollPane(textLogError, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+        JScrollPane scrollGroup = new JScrollPane(textLogGroup, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        JScrollPane scrollTeacher = new JScrollPane(textLogTeacher, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        JScrollPane scrollClass = new JScrollPane(textLogClass, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
 
         mainPanel.add(scrollError);
         mainPanel.add(scrollServer);
-        mainPanel.add(scrollGroup);
+        mainPanel.add(scrollAll);
 
-//        mainPanel.add(textLastConnection);
-//        mainPanel.add(textCountConnection);
+        mainPanel.add(scrollGroup);
+        mainPanel.add(scrollTeacher);
+        mainPanel.add(scrollClass);
 
         frame.add(mainPanel);
         frame.setVisible(true);
@@ -82,175 +93,153 @@ public class Start extends JFrame {
         frame.setLocationRelativeTo(null); //помещает окно на центр
     }
 
-    public static void addTextGroup(String args){
+    public static void addTextAll(String args) {
 
-        textLogGroup.append(args+"\n\n");
-        textLogGroup.setCaretPosition(textLogGroup.getDocument().getLength());
+        textLogAll.append(args + "\n\n");
+        textLogAll.setCaretPosition(textLogAll.getDocument().getLength());
     }
 
-    static void addTextServer(String args){
-        textLogServer.append("====="+getTime()+"====="+"\n"+args+"\n\n");
+
+    static void addTextServer(String args) {
+        textLogServer.append("=====" + getTime() + "=====" + "\n" + args + "\n\n");
         textLogServer.setCaretPosition(textLogServer.getDocument().getLength());
 
     }
-    public static void addTextError(String args){
 
-        textLogError.append(getTime()+"\n"+args+"\n\n");
+    public static void addTextError(String args) {
+
+        textLogError.append(getTime() + "\n" + args + "\n\n");
         textLogError.setCaretPosition(textLogError.getDocument().getLength());
 
     }
 
-    static void setTextLastConnection(){
+    private static void setTextLastConnection() {
         lastConnectionTime = getTime();
-        frame.setTitle("Server (last connection = "+lastConnectionTime+" ) (count connection = "+Server.userConnection+")");
+        frame.setTitle("Server (last connection = " + lastConnectionTime + " )" );
     }
 
-    static void setTextCountConnection(long count){
 
-     frame.setTitle("Server (last connection = "+ lastConnectionTime +" ) count connection("+count+")");
-//        textCountConnection.setText(String.valueOf(count));
+    public synchronized static void addTextGroup(String args){
+        textLogGroup.append(args+"\n\n");
+        textLogGroup.setCaretPosition(textLogGroup.getDocument().getLength());
     }
 
-    static String getTime(){
+    public synchronized static void addTextClass(String args){
+        textLogClass.append(args+"\n\n");
+        textLogClass.setCaretPosition(textLogClass.getDocument().getLength());
+    }
+
+    public synchronized static void addTextTeacher(String args){
+        textLogTeacher.append(args+"\n\n");
+        textLogTeacher.setCaretPosition(textLogTeacher.getDocument().getLength());
+    }
+
+    static String getTime() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        return sdf.format(cal.getTime()) +" "+ cal.get(Calendar.DAY_OF_MONTH)+"."+ (cal.get(Calendar.MONTH)+1)+"."+cal.get(Calendar.YEAR);
+        return sdf.format(cal.getTime()) + " " + cal.get(Calendar.DAY_OF_MONTH) + "." + (cal.get(Calendar.MONTH) + 1) + "." + cal.get(Calendar.YEAR);
     }
 
     public static void main(String[] args) {
         createGIU();
+
         //start our server for listen requesr
         new Thread(new Server()).start();
+
+        StatisticMain.initGUI();
 
         new Thread(() -> {
 
             //цикл для очного отделения
             while (true) {
                 setTextLastConnection();
+                StatisticMain.clearProgress();
+                saveTimeTable = new SaveTimeTable();
 
-                textLogGroup.setText("==="+getTime()+"===\n");
-                textLogError.append("==="+getTime()+"===\n");
-                textLogServer.setText("==="+getTime()+"====\n");
+                textLogAll.setText("===" + getTime() + "===\n");
+                textLogError.append("===" + getTime() + "===\n");
+                textLogServer.setText("===" + getTime() + "====\n");
 
                 long startConnection = System.currentTimeMillis();
+
                 GetGroupTeacherClassroom get = new GetGroupTeacherClassroom("ochnoe");
+                GetGroupTeacherClassroom getz = new GetGroupTeacherClassroom("zaocnoe");
 
                 list_group = get.getList(GetGroupTeacherClassroom.GROUP);
                 list_teacher = get.getList(GetGroupTeacherClassroom.TEACHER);
                 list_classroom = get.getList(GetGroupTeacherClassroom.CLASSROOM);
+                list_group_z = getz.getList(GetGroupTeacherClassroom.GROUP);
+
                 print("---------------------------------------------------");
                 print("Teacher count: " + list_teacher.size());
-                print("Group count: " + list_group.size());
+                print("Group och count: " + list_group.size());
+                print("Group zaoch count: " + list_group_z.size());
                 print("Classroom count: " + list_classroom.size());
                 print("connectionTime = " + (System.currentTimeMillis() - startConnection));
                 print("---------------------------------------------------\n");
 
+                //сохраянем списки групп после всех коннектов
+                saveTimeTable.saveLists();
 
+                //инициализируем потоки
                 Thread classThread = new Thread(() -> {
+                    GetTimeTable thread;
                     for (Container c : list_classroom) {
-                        new Thread(new GetTimeTable(c, "ochnoe")).start();
-                        try {
-                            sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        thread = new GetTimeTable(c, "ochnoe");
+                        thread.start();
                     }
 
                 });
 
+
                 Thread teacherThread = new Thread(() -> {
+                    GetTimeTable getTeacher;
+
                     for (Container c : list_teacher) {
-                        new Thread(new GetTimeTable(c, "ochnoe")).start();
-                        try {
-                            sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        getTeacher = new GetTimeTable(c, "ochnoe");
+                        getTeacher.start();
                     }
-                    classThread.start();
                 });
 
                 Thread groupThread = new Thread(() -> {
+                    GetTimeTable getGroupThread;
                     for (Container c : list_group) {
-                        new Thread(new GetTimeTable(c, "ochnoe")).start();
-                        try {
-                            sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        getGroupThread = new GetTimeTable(c, "ochnoe");
+                        getGroupThread.start();
                     }
-                    teacherThread.start();
+
                 });
 
-
-                groupThread.start();
-
-//                    new Thread(new GetTimeTable(list_group.get(1))).start();
-
-                try {
-                    sleep(1000 * 60 * (int) (60 * 1.0));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
-        //цикл для заочного отделения
-
-        new Thread(() -> {
-
-            while (true) {
-                long startConnection = System.currentTimeMillis();
-                GetGroupTeacherClassroom get = new GetGroupTeacherClassroom("zaocnoe");
-
-                list_group_z = get.getList(GetGroupTeacherClassroom.GROUP);
-
-                print("---------------------------------------------------");
-                print("Group count: " + list_group_z.size());
-                print("connectionTime zaocnoe = " + (System.currentTimeMillis() - startConnection));
-                print("---------------------------------------------------\n");
 
 
                 Thread groupThreadZ = new Thread(() -> {
+                    GetTimeTable getGroupZ;
                     for (Container c : list_group_z) {
-                        new Thread(new GetTimeTable(c, "zaochnoe")).start();
-                        try {
-                            sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                       getGroupZ = new GetTimeTable(c, "zaochnoe");
+                        getGroupZ.start();
                     }
+
                 });
 
+                //запускаем потоки
+                    groupThread.start();
 
-                groupThreadZ.start();
+                    groupThreadZ.start();
 
-//                    new Thread(new GetTimeTable(list_group.get(1))).start();
+                    teacherThread.start();
 
+                    classThread.start();
+
+                //ставим поток на паузу в 60 минут
                 try {
-                    sleep(1000 * 60 * (int) (60 * 1.0));
+                    sleep(1000 * 60 * (int) (60 * 1.0)); // 1 hours
+//                    sleep(1000 * 60 * 20); //20 minutes
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
             }
         }).start();
-
-
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    while (true){
-//                    sleep(500);
-//                    new TestClient().setupConnection();
-//                    }
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//        }).start();
-
 
     }
 

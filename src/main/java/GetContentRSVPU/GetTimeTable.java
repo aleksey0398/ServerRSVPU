@@ -7,12 +7,13 @@ import main.var;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import statistic.StatisticMain;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetTimeTable implements Runnable {
+public class GetTimeTable extends Thread {
 
     //    Map<String, TimeTableObject> mapTime = new HashMap<>();
     private String value;
@@ -49,8 +50,10 @@ public class GetTimeTable implements Runnable {
     @Override
     public void run() {
         try {
+            if (name.equals("Спортивный зал"))
+                return;
 //            print("Connection URL: " + this.url + this.value);
-            Document doc = Jsoup.connect(this.url + this.value).timeout(10 * 6000).ignoreHttpErrors(true).get();
+            Document doc = Jsoup.connect(this.url + this.value).timeout(1000 * 60 * 30).ignoreHttpErrors(true).get();
             String jsonTimeTable = new Gson().toJson(parseHTML(doc));
 
 //            GetResultThread.result.put(this.valueForMap, new Gson().toJson(timeTableList));
@@ -62,20 +65,29 @@ public class GetTimeTable implements Runnable {
 //                    print("case v_gru");
                     if (type.equals("ochnoe")) {
                         GetResultThread.result_group.put(this.valueForMap, jsonTimeTable);
+                        Start.addTextGroup(this.name + ": complete");
+                        StatisticMain.setProgressDownloadGroup();
                     } else {
                         GetResultThread.result_group_z.put(this.valueForMap, jsonTimeTable);
+                        Start.addTextAll(this.name + ": complete");
+                        StatisticMain.setProgressDownloadGroupz();
                     }
-                    Start.addTextGroup(this.name + ": complete");
+
+
                     break;
                 case "prep":
 //                    print("case v_prep");
                     GetResultThread.result_teacher.put(this.valueForMap, jsonTimeTable);
-                    Start.addTextGroup(this.name+": complete");
+//                    Start.addTextAll(this.name + ": complete");
+                    Start.addTextTeacher(this.name + ": complete");
+                    StatisticMain.setProgressDownloadTeacher();
                     break;
                 case "aud":
 //                    print("case v_aud");
                     GetResultThread.result_class.put(this.valueForMap, jsonTimeTable);
-                    Start.addTextGroup(this.name+": complete");
+//                    Start.addTextAll(this.name + ": complete");
+                    Start.addTextClass(this.name + ": complete");
+                    StatisticMain.setProgressDownloadClass();
                     break;
             }
             print(this.name + ": complete");
@@ -84,14 +96,14 @@ public class GetTimeTable implements Runnable {
 
         } catch (IOException e) {
             e.printStackTrace();
-            run();
             System.err.println(this.name + ": error");
-            Start.addTextGroup(this.name+": ERROR");
+//            Start.addTextAll(this.name + ": ERROR");
             Start.addTextError(this.name + ": " + e.getMessage());
             Thread.currentThread().interrupt();
         } catch (Exception e) {
-            Start.addTextError("GetTimeTable\nrun()\n"+e.getMessage());
+            Start.addTextError("GetTimeTableBeta\nrun()\n" + name + "\n" + e.toString());
             Thread.currentThread().interrupt();
+            e.printStackTrace();
         }
 
     }
@@ -106,7 +118,7 @@ public class GetTimeTable implements Runnable {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
-            Start.addTextError("GetTimeTable\n"+"getTimeTable()\n"+e.getMessage());
+            Start.addTextError("GetTimeTableBeta\n" + "getTimeTable()\n" + e.getMessage());
         }
 
         return jsonForResult;
