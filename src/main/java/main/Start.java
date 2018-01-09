@@ -21,7 +21,7 @@ public class Start extends JFrame {
     public static List<Container> list_classroom = new ArrayList<>();
     public static List<Container> list_group_z = new ArrayList<>();
 
-    private static JTextArea textLogAll = new JTextArea();
+    private static JTextArea textLogGroupz = new JTextArea();
 
     private static JTextArea textLogGroup = new JTextArea();
     private static JTextArea textLogTeacher = new JTextArea();
@@ -38,7 +38,7 @@ public class Start extends JFrame {
     public static SaveTimeTable saveTimeTable;
 
     static {
-        textLogAll.setEditable(false);
+        textLogGroupz.setEditable(false);
         textLogServer.setEditable(false);
         textLogError.setEditable(false);
 
@@ -46,13 +46,13 @@ public class Start extends JFrame {
         textLogTeacher.setEditable(false);
         textLogClass.setEditable(false);
 
-        textLogAll.setFont(textLogAll.getFont().deriveFont(15f));
-        textLogServer.setFont(textLogAll.getFont());
-        textLogError.setFont(textLogAll.getFont());
+        textLogGroupz.setFont(textLogGroupz.getFont().deriveFont(15f));
+        textLogServer.setFont(textLogGroupz.getFont());
+        textLogError.setFont(textLogGroupz.getFont());
 
-        textLogGroup.setFont(textLogAll.getFont());
-        textLogClass.setFont(textLogAll.getFont());
-        textLogTeacher.setFont(textLogAll.getFont());
+        textLogGroup.setFont(textLogGroupz.getFont());
+        textLogClass.setFont(textLogGroupz.getFont());
+        textLogTeacher.setFont(textLogGroupz.getFont());
     }
 
     Start() {
@@ -67,10 +67,10 @@ public class Start extends JFrame {
 
     private static void createGIU() {
         frame = new JFrame("Server");
-        frame.setSize(1200, 800);
+        frame.setSize(1200, 700);
         JPanel mainPanel = new JPanel(new GridLayout(2, 3));
 
-        JScrollPane scrollAll = new JScrollPane(textLogAll, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        JScrollPane scrollAll = new JScrollPane(textLogGroupz, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         JScrollPane scrollServer = new JScrollPane(textLogServer, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         JScrollPane scrollError = new JScrollPane(textLogError, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
@@ -93,11 +93,7 @@ public class Start extends JFrame {
         frame.setLocationRelativeTo(null); //помещает окно на центр
     }
 
-    public static void addTextAll(String args) {
 
-        textLogAll.append(args + "\n\n");
-        textLogAll.setCaretPosition(textLogAll.getDocument().getLength());
-    }
 
 
     static void addTextServer(String args) {
@@ -118,6 +114,11 @@ public class Start extends JFrame {
         frame.setTitle("Server (last connection = " + lastConnectionTime + " )" );
     }
 
+    public static void addTextGroupz(String args) {
+
+        textLogGroupz.append(args + "\n\n");
+        textLogGroupz.setCaretPosition(textLogGroupz.getDocument().getLength());
+    }
 
     public synchronized static void addTextGroup(String args){
         textLogGroup.append(args+"\n\n");
@@ -134,7 +135,15 @@ public class Start extends JFrame {
         textLogTeacher.setCaretPosition(textLogTeacher.getDocument().getLength());
     }
 
-    static String getTime() {
+    public static void clearLogConnection(){
+        textLogServer.setText("\n===== Connection: "+Server.userConnection+" "+ getTime()+" =====\n\n");
+    }
+
+    public static void clearLogError(){
+        textLogError.setText("\n===== Error "+getTime()+" =====\n\n");
+    }
+
+    public static String getTime() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         return sdf.format(cal.getTime()) + " " + cal.get(Calendar.DAY_OF_MONTH) + "." + (cal.get(Calendar.MONTH) + 1) + "." + cal.get(Calendar.YEAR);
@@ -156,9 +165,13 @@ public class Start extends JFrame {
                 StatisticMain.clearProgress();
                 saveTimeTable = new SaveTimeTable();
 
-                textLogAll.setText("===" + getTime() + "===\n");
-                textLogError.append("===" + getTime() + "===\n");
-                textLogServer.setText("===" + getTime() + "====\n");
+                textLogGroupz.setText("===== Group z " + getTime() + "=====\n\n");
+                textLogGroup.setText("===== Group "+getTime()+" =====\n\n");
+                textLogTeacher.setText("===== Teacher "+getTime()+"=====\n\n");
+                textLogClass.setText("===== Classes "+getTime()+" =====\n\n");
+
+                textLogError.append("=====" + getTime() + "=====\n\n");
+                textLogServer.append("===== Connection: "+Server.userConnection+" "+ getTime() + "=====\n\n");
 
                 long startConnection = System.currentTimeMillis();
 

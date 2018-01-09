@@ -1,6 +1,5 @@
 package statistic;
 
-import beta.SaveTimeTable;
 import main.Start;
 
 import javax.swing.*;
@@ -22,13 +21,21 @@ public class StatisticMain extends JFrame {
     private static final String stringDownloadTeacher = "Teacher downloaded: ";
     private static final String stringDownloadClass = "Class downloaded: ";
 
-    public static int progressDownloadGroup = 0;
-    public static int progressDownloadGroupz = 0;
-    public static int progressDownloadTeacher = 0;
-    public static int progressDownloadClass = 1;
+    private static int progressDownloadGroup = 0;
+    private static int progressDownloadGroupz = 0;
+    private static int progressDownloadTeacher = 0;
+    private static int progressDownloadClass = 1;
+
+    private static JButton btnClearLogConnection;
+    private static JButton btnClearLogError;
 
     public static void initGUI(){
         uptime = new JLabel();
+
+        btnClearLogConnection = new JButton("Clear log connection");
+        btnClearLogError = new JButton("Clear log error");
+        btnListener();
+
         countConnection = new JLabel("Count connection: 0");
         downloadGroup = new JLabel(stringDownloadGroup);
         downloadGroupz = new JLabel(stringDownloadGroupz);
@@ -37,6 +44,7 @@ public class StatisticMain extends JFrame {
 
         mainFrame = new JFrame("Statistic");
         GridLayout gridLayout = new GridLayout(0,1);
+
         mainFrame.setLayout(gridLayout);
 
         mainFrame.add(uptime);
@@ -45,16 +53,28 @@ public class StatisticMain extends JFrame {
         mainFrame.add(downloadGroupz);
         mainFrame.add(downloadTeacher);
         mainFrame.add(downloadClass);
+        mainFrame.add(btnClearLogConnection);
+        mainFrame.add(btnClearLogError);
 
         mainFrame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        mainFrame.setSize(220,200);
+        mainFrame.setSize(250,280);
         mainFrame.setVisible(true);
 
         timeStart = System.currentTimeMillis();
         updateUpTime();
     }
 
-    public static void updateUpTime(){
+    static void btnListener(){
+        btnClearLogError.addActionListener(e -> {
+            Start.clearLogError();
+        });
+
+        btnClearLogConnection.addActionListener(e->{
+            Start.clearLogConnection();
+        });
+    }
+
+    private static void updateUpTime(){
         new Thread(() -> {
             while (true){
                 try {

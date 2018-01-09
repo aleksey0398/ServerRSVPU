@@ -69,7 +69,7 @@ public class GetTimeTable extends Thread {
                         StatisticMain.setProgressDownloadGroup();
                     } else {
                         GetResultThread.result_group_z.put(this.valueForMap, jsonTimeTable);
-                        Start.addTextAll(this.name + ": complete");
+                        Start.addTextGroupz(this.name + ": complete");
                         StatisticMain.setProgressDownloadGroupz();
                     }
 
@@ -78,14 +78,14 @@ public class GetTimeTable extends Thread {
                 case "prep":
 //                    print("case v_prep");
                     GetResultThread.result_teacher.put(this.valueForMap, jsonTimeTable);
-//                    Start.addTextAll(this.name + ": complete");
+//                    Start.addTextGroupz(this.name + ": complete");
                     Start.addTextTeacher(this.name + ": complete");
                     StatisticMain.setProgressDownloadTeacher();
                     break;
                 case "aud":
 //                    print("case v_aud");
                     GetResultThread.result_class.put(this.valueForMap, jsonTimeTable);
-//                    Start.addTextAll(this.name + ": complete");
+//                    Start.addTextGroupz(this.name + ": complete");
                     Start.addTextClass(this.name + ": complete");
                     StatisticMain.setProgressDownloadClass();
                     break;
@@ -97,7 +97,7 @@ public class GetTimeTable extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println(this.name + ": error");
-//            Start.addTextAll(this.name + ": ERROR");
+//            Start.addTextGroupz(this.name + ": ERROR");
             Start.addTextError(this.name + ": " + e.getMessage());
             Thread.currentThread().interrupt();
         } catch (Exception e) {
@@ -124,7 +124,7 @@ public class GetTimeTable extends Thread {
         return jsonForResult;
     }
 
-    private List<TimeTableOneDay> parseHTML(Document doc) throws Exception {
+    private List<TimeTableOneDay> parseHTML(Document doc) {
 
         List<TimeTableOneDay> timeTable = new ArrayList<>();
 

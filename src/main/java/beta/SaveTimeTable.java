@@ -4,9 +4,7 @@ import GetContentRSVPU.GetResultThread;
 import com.google.gson.Gson;
 import main.Start;
 
-import javax.lang.model.element.NestingKind;
 import java.io.*;
-import java.security.acl.LastOwnerException;
 import java.util.Calendar;
 import java.util.Scanner;
 import java.util.UUID;
@@ -37,7 +35,7 @@ public class SaveTimeTable {
     private String generateFilePath(boolean timeTable) {
 
         Calendar calendar = Calendar.getInstance();
-        return "RSVPUServer/" + calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.getTime()+(timeTable?"TimeTable":"List")+ ".txt";
+        return "RSVPUServer/" + calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + Start.getTime().replaceAll(":","~")+(timeTable?"TimeTable":"List")+ ".txt";
 
     }
 
