@@ -2,7 +2,8 @@ package main;
 
 import GetContentRSVPU.GetGroupTeacherClassroom;
 import GetContentRSVPU.GetTimeTable;
-import beta.SaveTimeTable;
+import beta.RamTest;
+import statistic.SaveTimeTable;
 import statistic.StatisticMain;
 
 import javax.swing.*;
@@ -53,16 +54,6 @@ public class Start extends JFrame {
         textLogGroup.setFont(textLogGroupz.getFont());
         textLogClass.setFont(textLogGroupz.getFont());
         textLogTeacher.setFont(textLogGroupz.getFont());
-    }
-
-    Start() {
-//        setTitle("Server");
-//        setLayout(new FlowLayout());
-//        setVisible(true);
-//        setSize(300, 300);
-//        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//        setLocationRelativeTo(null); //помещает окно на центр
-
     }
 
     private static void createGIU() {
@@ -150,6 +141,8 @@ public class Start extends JFrame {
     }
 
     public static void main(String[] args) {
+        RamTest.printUsingRAM();
+
         createGIU();
 
         //start our server for listen requesr
@@ -253,7 +246,6 @@ public class Start extends JFrame {
 
             }
         }).start();
-
     }
 
     private static void print(Object object) {

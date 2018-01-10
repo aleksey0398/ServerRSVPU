@@ -1,5 +1,7 @@
 package beta;
 
+import statistic.SaveTimeTable;
+
 import javax.swing.*;
 
 public class SavesControl extends JFrame {

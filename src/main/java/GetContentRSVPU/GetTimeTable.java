@@ -92,7 +92,7 @@ public class GetTimeTable extends Thread {
             }
             print(this.name + ": complete");
 
-            Thread.currentThread().interrupt();
+//            Thread.currentThread().interrupt();
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,4 +1,4 @@
-package beta;
+package statistic;
 
 import GetContentRSVPU.GetResultThread;
 import com.google.gson.Gson;
@@ -11,11 +11,12 @@ import java.util.UUID;
 
 public class SaveTimeTable {
 
-    String filePathForTimeTable;
-    String filePathForLists;
-
+    static String separatorTest1 = "©©©©©©©©©©©©©©©©©©©©©©©©©©©©©©©©©©";
+    static String separatorTest2 = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
     private final String separator1 = "|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|";
     private final String separator2 = "+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+|+";
+    String filePathForTimeTable;
+    String filePathForLists;
 
     public SaveTimeTable() {
         filePathForTimeTable = generateFilePath(true);
@@ -32,70 +33,9 @@ public class SaveTimeTable {
 
     }
 
-    private String generateFilePath(boolean timeTable) {
-
-        Calendar calendar = Calendar.getInstance();
-        return "RSVPUServer/" + calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + Start.getTime().replaceAll(":","~")+(timeTable?"TimeTable":"List")+ ".txt";
-
-    }
-
-    public void saveLists() {
-//        Calendar calendar = Calendar.getInstance();
-//        String fileName = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + " " + calendar.get(Calendar.DAY_OF_MONTH) + "." + calendar.get(Calendar.MONTH) + "." + calendar.get(Calendar.YEAR);
-        File file = new File(this.filePathForLists);
-        Log(file.exists());
-        Log(file.getAbsolutePath());
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            PrintWriter writer = new PrintWriter(file);
-            writer.println(new Gson().toJson(Start.list_group));
-            writer.println(this.separator1);
-            writer.println(new Gson().toJson(Start.list_teacher));
-            writer.println(this.separator1);
-            writer.println(new Gson().toJson(Start.list_classroom));
-            writer.println(this.separator1);
-            writer.println(new Gson().toJson(Start.list_group_z));
-            writer.println();
-            writer.close();
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void saveTimeTable() {
-        Log("Save Time Table");
-        File file = new File(this.filePathForTimeTable);
-        try {
-            PrintWriter writer = new PrintWriter(file);
-            writer.println(new Gson().toJson(GetResultThread.result_group));
-            writer.println(this.separator2);
-            writer.println(new Gson().toJson(GetResultThread.result_teacher));
-            writer.println(this.separator2);
-            writer.println(new Gson().toJson(GetResultThread.result_class));
-            writer.println(this.separator2);
-            writer.println(new Gson().toJson(GetResultThread.result_group_z));
-            writer.println();
-            writer.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
     static void Log(Object args) {
         System.out.println("SaveTimeTable: " + String.valueOf(args));
     }
-
-    static String separatorTest1 = "©©©©©©©©©©©©©©©©©©©©©©©©©©©©©©©©©©";
-    static String separatorTest2 = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
 
     static void testWrite(String name) {
         Calendar c = Calendar.getInstance();
@@ -166,6 +106,64 @@ public class SaveTimeTable {
 
             }
 //            Log(inFile.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String generateFilePath(boolean timeTable) {
+
+        Calendar calendar = Calendar.getInstance();
+        return "RSVPUServer/" + calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "/" + Start.getTime().replaceAll(":","~")+(timeTable?"TimeTable":"List")+ ".txt";
+
+    }
+
+    public void saveLists() {
+//        Calendar calendar = Calendar.getInstance();
+//        String fileName = calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + " " + calendar.get(Calendar.DAY_OF_MONTH) + "." + calendar.get(Calendar.MONTH) + "." + calendar.get(Calendar.YEAR);
+        File file = new File(this.filePathForLists);
+        Log(file.exists());
+        Log(file.getAbsolutePath());
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            PrintWriter writer = new PrintWriter(file);
+            writer.println(new Gson().toJson(Start.list_group));
+            writer.println(this.separator1);
+            writer.println(new Gson().toJson(Start.list_teacher));
+            writer.println(this.separator1);
+            writer.println(new Gson().toJson(Start.list_classroom));
+            writer.println(this.separator1);
+            writer.println(new Gson().toJson(Start.list_group_z));
+            writer.println();
+            writer.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveTimeTable() {
+        Log("Save Time Table");
+        File file = new File(this.filePathForTimeTable);
+        try {
+            PrintWriter writer = new PrintWriter(file);
+            writer.println(new Gson().toJson(GetResultThread.result_group));
+            writer.println(this.separator2);
+            writer.println(new Gson().toJson(GetResultThread.result_teacher));
+            writer.println(this.separator2);
+            writer.println(new Gson().toJson(GetResultThread.result_class));
+            writer.println(this.separator2);
+            writer.println(new Gson().toJson(GetResultThread.result_group_z));
+            writer.println();
+            writer.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
