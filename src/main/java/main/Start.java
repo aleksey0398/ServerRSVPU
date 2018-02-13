@@ -2,9 +2,9 @@ package main;
 
 import GetContentRSVPU.GetGroupTeacherClassroom;
 import GetContentRSVPU.GetTimeTable;
-import beta.RamTest;
 import statistic.SaveTimeTable;
 import statistic.StatisticMain;
+import utils.RamTest;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,7 +1,7 @@
 package statistic;
 
-import beta.RamTest;
 import main.Start;
+import utils.RamTest;
 
 import javax.swing.*;
 import java.awt.*;

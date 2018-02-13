@@ -1,4 +1,4 @@
-package beta;
+package utils;
 
 public class RamTest {
 
