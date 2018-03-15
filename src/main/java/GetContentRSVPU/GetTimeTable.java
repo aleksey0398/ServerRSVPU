@@ -54,7 +54,8 @@ public class GetTimeTable extends Thread {
                 return;
 //            print("Connection URL: " + this.url + this.value);
             Document doc = Jsoup.connect(this.url + this.value).timeout(1000 * 60 * 30).ignoreHttpErrors(true).get();
-            String jsonTimeTable = new Gson().toJson(parseHTML(doc));
+            List<TimeTableOneDay> ttOneDay = parseHTML(doc);
+            String jsonTimeTable = new Gson().toJson(ttOneDay);
 
 //            GetResultThread.result.put(this.valueForMap, new Gson().toJson(timeTableList));
 
@@ -90,7 +91,7 @@ public class GetTimeTable extends Thread {
                     StatisticMain.setProgressDownloadClass();
                     break;
             }
-            print(this.name + ": complete");
+            print(this.name + ": complete"+"\n\t\t\t\t"+ttOneDay.size());
 
 //            Thread.currentThread().interrupt();
 

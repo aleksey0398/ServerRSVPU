@@ -4,7 +4,6 @@ import GetContentRSVPU.GetGroupTeacherClassroom;
 import GetContentRSVPU.GetTimeTable;
 import statistic.SaveTimeTable;
 import statistic.StatisticMain;
-import utils.RamTest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,6 +30,16 @@ public class Start extends JFrame {
     private static JTextArea textLogServer = new JTextArea();
     private static JTextArea textLogError = new JTextArea();
 
+
+    private static DefaultListModel lmGroup = new DefaultListModel();
+    private static DefaultListModel lmGroupZ = new DefaultListModel();
+    private static DefaultListModel lmTeacher = new DefaultListModel();
+    private static DefaultListModel lmClass = new DefaultListModel();
+
+    private static JList listViewGroup = new JList(lmGroup);
+    private static JList listViewGroupZ = new JList(lmGroupZ);
+    private static JList listViewTeacher = new JList(lmTeacher);
+    private static JList listViewClassRoom = new JList(lmClass);
 
     private static JFrame frame;
 
@@ -109,6 +118,7 @@ public class Start extends JFrame {
 
         textLogGroupz.append(args + "\n\n");
         textLogGroupz.setCaretPosition(textLogGroupz.getDocument().getLength());
+//        lmGroupZ.addElement(args);
     }
 
     public synchronized static void addTextGroup(String args){
@@ -141,7 +151,6 @@ public class Start extends JFrame {
     }
 
     public static void main(String[] args) {
-        RamTest.printUsingRAM();
 
         createGIU();
 
@@ -181,17 +190,21 @@ public class Start extends JFrame {
                 print("Group och count: " + list_group.size());
                 print("Group zaoch count: " + list_group_z.size());
                 print("Classroom count: " + list_classroom.size());
-                print("connectionTime = " + (System.currentTimeMillis() - startConnection));
+                print("Connection Time = " + (System.currentTimeMillis() - startConnection));
                 print("---------------------------------------------------\n");
 
                 //сохраянем списки групп после всех коннектов
                 saveTimeTable.saveLists();
 
-                //инициализируем потоки
                 Thread classThread = new Thread(() -> {
                     GetTimeTable thread;
                     for (Container c : list_classroom) {
                         thread = new GetTimeTable(c, "ochnoe");
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         thread.start();
                     }
 
@@ -203,6 +216,11 @@ public class Start extends JFrame {
 
                     for (Container c : list_teacher) {
                         getTeacher = new GetTimeTable(c, "ochnoe");
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         getTeacher.start();
                     }
                 });
@@ -211,6 +229,11 @@ public class Start extends JFrame {
                     GetTimeTable getGroupThread;
                     for (Container c : list_group) {
                         getGroupThread = new GetTimeTable(c, "ochnoe");
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         getGroupThread.start();
                     }
 
@@ -222,6 +245,11 @@ public class Start extends JFrame {
                     GetTimeTable getGroupZ;
                     for (Container c : list_group_z) {
                        getGroupZ = new GetTimeTable(c, "zaochnoe");
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         getGroupZ.start();
                     }
 
@@ -238,7 +266,7 @@ public class Start extends JFrame {
 
                 //ставим поток на паузу в 60 минут
                 try {
-                    sleep(1000 * 60 * (int) (60 * 1.0)); // 1 hours
+                    sleep(1000 * 60 * (int) (60 * 2.0)); // 2 hours
 //                    sleep(1000 * 60 * 20); //20 minutes
                 } catch (InterruptedException e) {
                     e.printStackTrace();
